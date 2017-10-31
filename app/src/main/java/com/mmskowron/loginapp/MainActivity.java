@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("name", name);
                 intent.putExtra("test", "to jest jestowy przyklad");
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -69,8 +70,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(MainActivity.this, SettingActivity.class);
-                startActivity(myIntent);
+                startActivityForResult(myIntent,1);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK){
+            Toast.makeText(this, data.getStringExtra("mail"), Toast.LENGTH_LONG).show();
+        }
     }
 }

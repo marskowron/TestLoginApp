@@ -11,11 +11,14 @@ import android.widget.ImageButton;
 
 public class SettingActivity extends AppCompatActivity {
 
-    private Button returnButton;
-    private ImageButton sendMailButton;
-    private ImageButton goToWebsiteButton;
-    private String email;
-    private String website;
+    ImageButton sendMailButton;
+    ImageButton goToWebsiteButton;
+    String email;
+    String website;
+    EditText websiteField;
+    EditText emailField;
+    Button returnButton;
+    int countMail = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,22 +26,35 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         returnButton = (Button) findViewById(R.id.returnButton);
+        sendMailButton = (ImageButton) findViewById(R.id.sendMailButton);
+        goToWebsiteButton = (ImageButton) findViewById(R.id.goToWebsiteButton);
+        websiteField = (EditText) findViewById(R.id.website);
+
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(SettingActivity.this, MainActivity.class);
-                startActivity(myIntent);
+                emailField = (EditText) findViewById(R.id.email);
+                email = emailField.getText().toString();
+
+                Intent myIntent = new Intent();
+                if(countMail > 0) {
+                    myIntent.putExtra("mail", "Wysłałeś maila do: " + email);
+                }
+                else{
+                    myIntent.putExtra("mail", "Do nikogo nie wysłaleś maila :( Nie masz przyjaciół???");
+                }
+                setResult(RESULT_OK, myIntent);
+                finish();
             }
         });
 
-        sendMailButton = (ImageButton) findViewById(R.id.sendMailButton);
         sendMailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                EditText emailField = (EditText) findViewById(R.id.email);
+                emailField = (EditText) findViewById(R.id.email);
                 email = emailField.getText().toString();
-
+                countMail++;
                 Intent sendIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto",email, null));
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Testowy temat");
@@ -47,15 +63,12 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        goToWebsiteButton = (ImageButton) findViewById(R.id.goToWebsiteButton);
         goToWebsiteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                EditText websiteField = (EditText) findViewById(R.id.website);
                 website = websiteField.getText().toString();
                 if (website.startsWith("http://") || website.startsWith("https://")){
-
                 } else{
                     website="http://" + website;
                 }
